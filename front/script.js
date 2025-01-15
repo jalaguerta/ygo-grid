@@ -38,25 +38,37 @@ const BACKEND_ENDPOINT = 'http://127.0.0.1:8000/api/validate-card/';
 document.addEventListener("DOMContentLoaded", function () {
     const inputField = document.getElementById("input-field");
 
-    // Initialize Awesomplete
-    const awesomplete = new Awesomplete(inputField, {
-        minChars: 2, // Start showing suggestions after typing 2 characters
-        maxItems: 10, // Show at most 10 suggestions
-    });
+    if (!inputField) {
+        console.error("Input field not found!");
+        return;
+    }
 
-    // Fetch suggestions dynamically
+    console.log("Input field found:", inputField);
+
+    const awesomplete = new Awesomplete(inputField, {
+        minChars: 2, // Show suggestions after typing 2 characters
+        maxItems: 10, // Limit to 10 suggestions
+    });
+    console.log("Awesomplete initialized:", awesomplete);
+
     inputField.addEventListener("input", function () {
         const query = inputField.value;
-
+    
         if (query.length > 1) { // Trigger fetch only for meaningful input
-            fetch(`/autocomplete/?q=${encodeURIComponent(query)}`)
+            const url = `http://127.0.0.1:8000/api/autocomplete/?q=${encodeURIComponent(query)}`;
+            console.log(`Fetching suggestions from: ${url}`); // Debugging log
+    
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    awesomplete.list = data; // Populate Awesomplete with suggestions
+                    console.log("Suggestions received:", data); // Debugging log
+                    awesomplete.list = data; // Populate Awesomplete with API data
                 })
-                .catch(error => console.error("Error fetching suggestions:", error));
+                .catch(error => {
+                    console.error("Error fetching suggestions:", error);
+                });
         }
-    });
+    });    
 });
 
 // Function to submit the answer

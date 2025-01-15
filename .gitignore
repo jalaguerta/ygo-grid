@@ -6,3 +6,4 @@ __pycache__/
 *.pyc
 *.pyc
 grid_backend/grid/__pycache__/urls.cpython-311.pyc
+*.pyc
