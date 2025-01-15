@@ -3,3 +3,6 @@ venv/
 __pycache__/
 .env
 
+*.pyc
+*.pyc
+grid_backend/grid/__pycache__/urls.cpython-311.pyc
