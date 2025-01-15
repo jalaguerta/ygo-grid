@@ -18,8 +18,6 @@ const GRID_CRITERIA = {
     "cell-9": { "level__exact": 2, "attribute__iexact": "FIRE" },
 };
 
-
-
 // Function to open the form
 function openForm(cellId) {
     currentCell = cellId; // Save the ID of the clicked cell
@@ -36,6 +34,32 @@ function closeForm() {
 
 const BACKEND_ENDPOINT = 'http://127.0.0.1:8000/api/validate-card/';
 
+// Awesomplete Integration
+document.addEventListener("DOMContentLoaded", function () {
+    const inputField = document.getElementById("input-field");
+
+    // Initialize Awesomplete
+    const awesomplete = new Awesomplete(inputField, {
+        minChars: 2, // Start showing suggestions after typing 2 characters
+        maxItems: 10, // Show at most 10 suggestions
+    });
+
+    // Fetch suggestions dynamically
+    inputField.addEventListener("input", function () {
+        const query = inputField.value;
+
+        if (query.length > 1) { // Trigger fetch only for meaningful input
+            fetch(`/autocomplete/?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    awesomplete.list = data; // Populate Awesomplete with suggestions
+                })
+                .catch(error => console.error("Error fetching suggestions:", error));
+        }
+    });
+});
+
+// Function to submit the answer
 function submitAnswer() {
     const inputField = document.getElementById("input-field").value;
 
@@ -68,11 +92,8 @@ function submitAnswer() {
                     if (cell) {
                         cell.classList.add("validated"); // Add the validated class
                     }
-                    //alert(`Correct! ${data.card_name} was validated.`);
-                    // above comented out so we dont have alert box anymore
-                    score++
+                    score++;
                     document.getElementById("score").textContent = score;
-
                 } else {
                     alert(data.message || "Invalid guess.");
                 }
