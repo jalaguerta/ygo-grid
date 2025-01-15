@@ -8,6 +8,14 @@ from .utils import validate_guess
 
 from django.http import JsonResponse
 
+def autocomplete_cards(request):
+    query = request.GET.get('q', '')  # Get the query string from the request
+    if query:
+        # Query the database for cards with names that match the query
+        cards = Card.objects.filter(name__icontains=query).values_list('name', flat=True)[:10]
+        return JsonResponse(list(cards), safe=False)  # Return the list of names as JSON
+    return JsonResponse([], safe=False)  # Return an empty list if no query provided
+
 def test_view(request):
     return JsonResponse({"message": "Test view is working!"})
 
